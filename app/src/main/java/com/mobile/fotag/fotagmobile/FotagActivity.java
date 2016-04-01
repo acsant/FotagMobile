@@ -43,8 +43,6 @@ public class FotagActivity extends AppCompatActivity {
         super.onPostCreate(savedInstanceState);
         Log.d("Fotag Activity", "onPostCreate");
 
-        //model.addObserver(listImageView);
-        model.addObserver(portView);
         model.changed();
         model.notifyObservers();
     }

@@ -1,15 +1,10 @@
 package com.mobile.fotag.fotagmobile;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.widget.ImageView;
-
-import java.lang.ref.WeakReference;
+import android.util.TypedValue;
 
 /**
  * Created by Akash-Mac on 16-03-30.
@@ -18,12 +13,15 @@ public class DecodeImageTask extends AsyncTask<Integer, Void, Bitmap> {
 
     private Context context;
     private Model model;
-    private static int defSizeHeight = 265;
-    private static int defSizeWidth = 150;
+    private static int defSizeHeight;
+    private static int defSizeWidth;
 
     public DecodeImageTask (Context ctx, Model _model) {
         context = ctx;
         model = _model;
+        defSizeHeight = context.getResources().getInteger(R.integer.def_img_height);
+        defSizeWidth = context.getResources().getInteger(R.integer.def_img_width);
+
     }
 
     @Override

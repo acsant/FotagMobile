@@ -1,6 +1,8 @@
 package com.mobile.fotag.fotagmobile;
 
 import android.content.Context;
+import android.content.res.Configuration;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,10 +28,12 @@ public class ListImageLayoutView extends RelativeLayout implements Observer {
         super(_context);
         model = _model;
         context = _context;
+        model.addObserver(this);
         View.inflate(context, R.layout.port_list, this);
         recyclerView = (RecyclerView) findViewById(R.id.fotag_recycler_view);
         recyclerView.setHasFixedSize(true);
-        rLayoutMgr = new LinearLayoutManager(context);
+        rLayoutMgr = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ?
+                new LinearLayoutManager(context) : new GridLayoutManager(context, 2);
         recyclerView.setLayoutManager(rLayoutMgr);
         rDataAdapter = new CustomRecyclerviewAdapter(model.getImageModels(), model);
     }
