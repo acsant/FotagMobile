@@ -27,4 +27,12 @@ public class ImageModel {
         return rank;
     }
 
+    public void rankImage (int _rank) {
+        rank = _rank;
+    }
+
+    public UUID getImgId () {
+        return imgId;
+    }
+
 }

@@ -40,12 +40,16 @@ public class ListImageLayoutView extends RelativeLayout implements Observer {
 
     @Override
     public void update(Observable observable, Object data) {
+        rLayoutMgr = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ?
+                new LinearLayoutManager(context) : new GridLayoutManager(context, 2);
+        recyclerView.setLayoutManager(rLayoutMgr);
         rDataAdapter = new CustomRecyclerviewAdapter(model.getImageModels(), model);
         recyclerView.setAdapter(rDataAdapter);
         rDataAdapter.notifyDataSetChanged();
         invalidate();
     }
 
+    // This is an adapter to handle the binding between images and views and rankings and ranking bars
     private class CustomRecyclerviewAdapter extends RecyclerView.Adapter<ImageBoxView>{
 
         private ArrayList<ImageModel> dataSet;
@@ -65,6 +69,8 @@ public class ListImageLayoutView extends RelativeLayout implements Observer {
 
         @Override
         public void onBindViewHolder(ImageBoxView holder, int position) {
+            holder.setId(dataSet.get(position).getImgId());
+            holder.setImgRanking(dataSet.get(position).getRank());
             holder.getView().setImageBitmap(dataSet.get(position).getImage());
         }
 

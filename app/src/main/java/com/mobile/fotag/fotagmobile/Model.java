@@ -22,10 +22,10 @@ public class Model extends Observable {
 
     private boolean imagesLoaded = false;
     private HashMap<UUID, ImageModel> allImages;
-//    private int[] imageIds = {R.drawable.twitter, R.drawable.twit1, R.drawable.twit2, R.drawable.twit3, R.drawable.twit4,
-//    R.drawable.twit5, R.drawable.twit7};
     private int[] imageIds = {R.drawable.img1, R.drawable.img2, R.drawable.img3, R.drawable.img4, R.drawable.img5,
         R.drawable.img6, R.drawable.img7, R.drawable.img11};
+    private int filter = 0;
+
     public Model () {
         allImages = new HashMap<>();
     }
@@ -38,6 +38,11 @@ public class Model extends Observable {
         UUID imageId = UUID.randomUUID();
         ImageModel imgM = new ImageModel(img, 0, imageId);
         allImages.put(imageId, imgM);
+        setChanged();
+        notifyObservers();
+    }
+
+    protected void onConfigChanged () {
         setChanged();
         notifyObservers();
     }
@@ -58,6 +63,24 @@ public class Model extends Observable {
 
     public ArrayList<ImageModel> getImageModels () {
         return new ArrayList<ImageModel>(allImages.values());
+    }
+
+    public void setImageRank (UUID id, int rank) {
+        allImages.get(id).rankImage(rank);
+    }
+
+    public void setFilter (int num) {
+        filter = num;
+    }
+
+    public ArrayList<ImageModel> getFilteredDataSet () {
+        ArrayList<ImageModel> toRet = new ArrayList<>();
+        for (ImageModel im : allImages.values()) {
+            if (im.getRank() > filter) {
+                toRet.add(im);
+            }
+        }
+        return toRet;
     }
 
 }
