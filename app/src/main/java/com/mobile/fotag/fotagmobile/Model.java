@@ -1,14 +1,9 @@
 package com.mobile.fotag.fotagmobile;
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
-import android.os.DropBoxManager;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,13 +13,15 @@ import java.util.UUID;
 /**
  * Created by Akash-Mac on 16-03-22.
  */
-public class Model extends Observable {
+public class Model extends Observable implements Serializable {
 
     private boolean imagesLoaded = false;
     private HashMap<UUID, ImageModel> allImages;
     private int[] imageIds = {R.drawable.img1, R.drawable.img2, R.drawable.img3, R.drawable.img4, R.drawable.img5,
         R.drawable.img6, R.drawable.img7, R.drawable.img11};
+    private ArrayList<String> allUrls = new ArrayList<>();
     private int filter = 0;
+    private String url;
 
     public Model () {
         allImages = new HashMap<>();
@@ -71,16 +68,42 @@ public class Model extends Observable {
 
     public void setFilter (int num) {
         filter = num;
+        setChanged();
+        notifyObservers();
     }
 
     public ArrayList<ImageModel> getFilteredDataSet () {
         ArrayList<ImageModel> toRet = new ArrayList<>();
         for (ImageModel im : allImages.values()) {
-            if (im.getRank() > filter) {
+            if (im.getRank() >= filter) {
                 toRet.add(im);
             }
         }
         return toRet;
+    }
+
+    public void setURL (String link) {
+        url = link;
+    }
+
+    public void addURLPermanent (String link) {
+        allUrls.add(link);
+    }
+
+    public String getURL () {
+        return url;
+    }
+
+    public ArrayList<String> loadedURLS () {
+        return allUrls;
+    }
+
+    public void clearImages() {
+        allUrls.clear();
+        allImages.clear();
+        imagesLoaded = false;
+        setChanged();
+        notifyObservers();
     }
 
 }

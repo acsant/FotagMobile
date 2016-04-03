@@ -43,7 +43,7 @@ public class ListImageLayoutView extends RelativeLayout implements Observer {
         rLayoutMgr = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT ?
                 new LinearLayoutManager(context) : new GridLayoutManager(context, 2);
         recyclerView.setLayoutManager(rLayoutMgr);
-        rDataAdapter = new CustomRecyclerviewAdapter(model.getImageModels(), model);
+        rDataAdapter = new CustomRecyclerviewAdapter(model.getFilteredDataSet(), model);
         recyclerView.setAdapter(rDataAdapter);
         rDataAdapter.notifyDataSetChanged();
         invalidate();

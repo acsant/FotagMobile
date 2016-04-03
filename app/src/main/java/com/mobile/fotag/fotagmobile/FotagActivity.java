@@ -74,6 +74,10 @@ public class FotagActivity extends AppCompatActivity {
             for (int id : imageIds) {
                 new DecodeImageTask(this, model).execute(id);
             }
+            for (String uris : model.loadedURLS()) {
+                model.setURL(uris);
+                new DecodeImageTask(this, model).execute(-1);
+            }
             model.setImageLoaded(true);
         }
     }

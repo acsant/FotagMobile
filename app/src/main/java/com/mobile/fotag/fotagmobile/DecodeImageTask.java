@@ -4,7 +4,15 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.util.TypedValue;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Created by Akash-Mac on 16-03-30.
@@ -26,7 +34,20 @@ public class DecodeImageTask extends AsyncTask<Integer, Void, Bitmap> {
 
     @Override
     protected Bitmap doInBackground(Integer... params) {
-        return decodeBitmap(params[0]);
+        if (params[0] != -1) {
+            return decodeBitmap(params[0]);
+        } else {
+            return downloadFromWeb();
+        }
+    }
+
+    private Bitmap downloadFromWeb () {
+        String url = model.getURL();
+        Bitmap downloadedImg = null;
+        if (!url.isEmpty()) {
+            downloadedImg = decodeBitmapFromResource(context.getResources(), -1, url);
+        }
+        return downloadedImg;
     }
 
     @Override
@@ -34,24 +55,50 @@ public class DecodeImageTask extends AsyncTask<Integer, Void, Bitmap> {
         if (isCancelled()) {
             bitmap = null;
         }
-        bitmap = Bitmap.createScaledBitmap(bitmap, defSizeHeight, defSizeWidth, true);
-        model.addImage(bitmap);
+        if (bitmap != null) {
+            bitmap = Bitmap.createScaledBitmap(bitmap, defSizeHeight, defSizeWidth, true);
+            model.addImage(bitmap);
+        }
     }
 
     private Bitmap decodeBitmap (int resId) {
-        Bitmap bitmap = decodeBitmapFromResource(context.getResources(), resId);
+        Bitmap bitmap = decodeBitmapFromResource(context.getResources(), resId, null);
         return bitmap;
     }
 
-    private static Bitmap decodeBitmapFromResource (Resources res, int resId) {
+    private static Bitmap decodeBitmapFromResource (Resources res, int resId, String url) {
         // Check Image Dimension
         final BitmapFactory.Options boptions = new BitmapFactory.Options();
         boptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(res, resId, boptions);
+        BufferedInputStream is = null;
+        if (resId != -1) {
+            BitmapFactory.decodeResource(res, resId, boptions);
+        } else {
+            try {
+                URL connection = new URL(url);
+                is = new BufferedInputStream((InputStream) connection.getContent());
+            } catch (Exception e) {
+                Log.e("Error: ", "Invalid url: " + url);
+            }
+            BitmapFactory.decodeStream(is, null, boptions);
+
+        }
         // Calculating the size
         boptions.inSampleSize = calcSampleSize(boptions);
         boptions.inJustDecodeBounds = false;
-        return BitmapFactory.decodeResource(res, resId, boptions);
+        if (is == null) {
+            return BitmapFactory.decodeResource(res, resId, boptions);
+        } else {
+            Bitmap to_return = null;
+            try {
+                is.mark(is.available());
+                is.close();
+                to_return = BitmapFactory.decodeStream((InputStream) new URL(url).getContent(), null, boptions);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return to_return;
+        }
     }
 
     private static int calcSampleSize (BitmapFactory.Options boptions) {
