@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * Created by Akash-Mac on 16-03-30.
@@ -76,7 +77,8 @@ public class DecodeImageTask extends AsyncTask<Integer, Void, Bitmap> {
         } else {
             try {
                 URL connection = new URL(url);
-                is = new BufferedInputStream((InputStream) connection.getContent());
+                URLConnection conn = connection.openConnection();
+                is = new BufferedInputStream((InputStream) conn.getInputStream());
             } catch (Exception e) {
                 Log.e("Error: ", "Invalid url: " + url);
             }
@@ -93,7 +95,7 @@ public class DecodeImageTask extends AsyncTask<Integer, Void, Bitmap> {
             try {
                 is.mark(is.available());
                 is.close();
-                to_return = BitmapFactory.decodeStream((InputStream) new URL(url).getContent(), null, boptions);
+                to_return = BitmapFactory.decodeStream((InputStream) (new URL(url)).openConnection().getInputStream(), null, boptions);
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -17,8 +17,8 @@ public class Model extends Observable implements Serializable {
 
     private boolean imagesLoaded = false;
     private HashMap<UUID, ImageModel> allImages;
-    private int[] imageIds = {R.drawable.img1, R.drawable.img2, R.drawable.img3, R.drawable.img4, R.drawable.img5,
-        R.drawable.img6, R.drawable.img7, R.drawable.img11};
+    private int[] imageIds = {R.drawable.img2, R.drawable.img3, R.drawable.img4, R.drawable.img5,
+        R.drawable.img6, R.drawable.img7, R.drawable.img11, R.drawable.img10, R.drawable.twit4};
     private ArrayList<String> allUrls = new ArrayList<>();
     private int filter = 0;
     private String url;

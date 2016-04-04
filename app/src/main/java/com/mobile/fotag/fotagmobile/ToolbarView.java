@@ -72,7 +72,9 @@ public class ToolbarView extends LinearLayout implements Observer {
                             public void onClick(DialogInterface dialog, int which) {
                                 String urlInDialog = inText.getText().toString();
                                 model.setURL(urlInDialog);
-                                model.addURLPermanent(urlInDialog);
+                                if (model.isImageLoaded()) {
+                                    model.addURLPermanent(urlInDialog);
+                                }
                                 new DecodeImageTask(context, model).execute(-1);
                             }
                         })
